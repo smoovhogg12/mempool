@@ -1,4 +1,4 @@
-for LOCATION in fmt va1 fra tk7
+for LOCATION in fmt va1 fra tk7 us
 do
   for NODE in 201 202 203 204 205 206
   do
