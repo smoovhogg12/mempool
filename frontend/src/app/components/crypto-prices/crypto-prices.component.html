@@ -1,0 +1,70 @@
+<app-indexing-progress></app-indexing-progress>
+
+<div class="full-container">
+  <div class="card-header mb-0 mb-md-4">
+    <span i18n="crypto-prices.title">Cryptocurrency Prices</span>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border text-light"></div>
+  </div>
+
+  <div *ngIf="!isLoading && (cryptoMarkets$ | async) as markets; else noData">
+    <div *ngIf="markets.length === 0" class="text-center text-muted py-4">
+      <span i18n="crypto-prices.no-data">No cryptocurrency data available</span>
+    </div>
+
+    <div class="table-responsive" *ngIf="markets.length > 0">
+      <table class="table table-borderless table-striped">
+        <thead>
+          <tr>
+            <th class="rank-col" i18n="crypto-prices.rank">#</th>
+            <th i18n="crypto-prices.name">Name</th>
+            <th class="text-right" i18n="crypto-prices.price">Price (USD)</th>
+            <th class="text-right" i18n="crypto-prices.change-24h">24h Change</th>
+            <th class="text-right d-none d-md-table-cell" i18n="crypto-prices.market-cap">Market Cap</th>
+            <th class="text-right d-none d-lg-table-cell" i18n="crypto-prices.volume">24h Volume</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let coin of markets; trackBy: trackById">
+            <td class="rank-col text-muted">{{ coin.market_cap_rank }}</td>
+            <td>
+              <div class="coin-name">
+                <img [src]="coin.image" [alt]="coin.name" class="coin-icon" loading="lazy" width="24" height="24">
+                <div>
+                  <span class="coin-fullname">{{ coin.name }}</span>
+                  <span class="coin-symbol text-muted">{{ coin.symbol | uppercase }}</span>
+                </div>
+              </div>
+            </td>
+            <td class="text-right">
+              <span class="price">{{ coin.current_price | number:'1.2-6' }}</span>
+            </td>
+            <td class="text-right">
+              <span [ngClass]="coin.price_change_percentage_24h >= 0 ? 'text-success' : 'text-danger'">
+                {{ coin.price_change_percentage_24h >= 0 ? '+' : '' }}{{ coin.price_change_percentage_24h | number:'1.2-2' }}%
+              </span>
+            </td>
+            <td class="text-right d-none d-md-table-cell text-muted">
+              ${{ coin.market_cap | number:'1.0-0' }}
+            </td>
+            <td class="text-right d-none d-lg-table-cell text-muted">
+              ${{ coin.total_volume | number:'1.0-0' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="text-muted text-right small pr-3" i18n="crypto-prices.source">
+      Data provided by CoinGecko
+    </p>
+  </div>
+
+  <ng-template #noData>
+    <div *ngIf="!isLoading" class="text-center text-muted py-4">
+      <span i18n="crypto-prices.no-data">No cryptocurrency data available</span>
+    </div>
+  </ng-template>
+</div>
